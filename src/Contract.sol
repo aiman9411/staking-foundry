@@ -3,6 +3,10 @@ pragma solidity ^0.8.13;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+error Stake__Failed();
+error Withdraw__Failed();
+error GetRewards_Failed();
+
 /**
 @title Staking App
 @author Aiman Nazmi
@@ -68,7 +72,8 @@ contract Staking {
     function stake(uint256 _amount) external updateRewards(msg.sender) {
         _totalSupply += _amount;
         balances[msg.sender] += _amount;
-        stakingToken.transferFrom(msg.sender, address(this), _amount);
+        bool success = stakingToken.transferFrom(msg.sender, address(this), _amount);
+        if(!success) revert Stake__Failed();
         emit Stake(msg.sender, _amount)
     }
 
@@ -77,7 +82,8 @@ contract Staking {
     function withdraw(uint256 _amount) external updateRewards(msg.sender) {
         _totalSupply -= _amount;
         balances[msg.sender] -= _amount;
-        stakingToken.transfer(msg.sender, _amount);
+        bool success = stakingToken.transfer(msg.sender, _amount);
+        if(!success) revert Withdraw__Failed;
         emit Withdraw(msg.sender, _amount);
     }
 
@@ -86,7 +92,8 @@ contract Staking {
         uint reward = rewards[msg.sender];
         rewards[msg.sender] = 0;
         userRewardPaid[msg.sender] += reward;
-        rewardsToken.transfer(msg.sender, reward);
+        bool success = rewardsToken.transfer(msg.sender, reward);
+        if(!success) revert GetRewards_Failed();
         emit GetRewards(msg.sender, reward);
     }
 
