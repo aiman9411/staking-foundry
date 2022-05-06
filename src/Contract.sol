@@ -83,7 +83,7 @@ contract Staking {
         _totalSupply -= _amount;
         balances[msg.sender] -= _amount;
         bool success = stakingToken.transfer(msg.sender, _amount);
-        if(!success) revert Withdraw__Failed;
+        if(!success) revert Withdraw__Failed();
         emit Withdraw(msg.sender, _amount);
     }
 
