@@ -74,7 +74,7 @@ contract Staking {
         balances[msg.sender] += _amount;
         bool success = stakingToken.transferFrom(msg.sender, address(this), _amount);
         if(!success) revert Stake__Failed();
-        emit Stake(msg.sender, _amount)
+        emit Stake(msg.sender, _amount);
     }
 
     // @notice Function to withdraw token
