@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
+// @notice Import OpenZeppelin contracts from GitHub
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+// @notice Define custom errors to save gas 
 error Stake__Failed();
 error Withdraw__Failed();
 error GetRewards_Failed();
