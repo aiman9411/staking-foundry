@@ -45,15 +45,61 @@ contract Staking {
     uint256 private _totalSupply;
 
     // @notice Mapping user to paid reward
-    mapping(address => uint256) public userRewardPerTokenPaid;
+    mapping(address => uint256) public userRewardPaid;
     // @notice Mapping user to reward
     mapping(address => uint256) rewards;
     // @notice Mapping user to balance
-    mapping(address => uint256) balance;    
+    mapping(address => uint256) balances;    
 
     // @notice Initialize constructor
     constructor(address _rewardsToken, address _stakingToken) {
         rewardsToken = IERC20(_rewardsToken);
         stakingToken = IERC20(_stakingToken);
     }
+
+    // @notice Function to view reward per token based on staked amount
+    function rewardPerToken() public view returns (uint256) {
+        if (_totalSupply == 0) {
+            return rewardPerTokenStored;
+        }
+        return
+            rewardPerTokenStored + (((block.timestamp - lastUpdateTime) * rewardRate * 1e18) / _totalSupply);
+    }
+
+    // @notice Function to view earned reward minus paid reward
+    function earned(address account) public view returns (uint256) {
+        return (balances[account] * rewardPerToken() - userRewardPerTokenPaid[account]) + rewards[account];
+    }
+
+    // @notice Modifier to update rewards
+    modifier updateRewards(address account) {
+        lastUpdateTime = block.timestamp;
+        rewards[account] = earned(account);
+        _;
+    }
+
+    // @notice Function to stake token
+    // @param _amount Amount of token to stake
+    function stake(uint256 _amount) external updateRewards(msg.sender) {
+        _totalSupply += _amount;
+        _balances[msg.sender] += _amount;
+        stakingToken.transferFrom(msg.sender, address(this), _amount);
+    }
+
+    // @notice Function to withdraw token
+    // @param _amount Amount of staken token to withdraw
+    function withdraw(uint256 _amount) external updateRewards(msg.sender) {
+        _totalSupply -= _amount;
+        _balances[msg.sender] -= _amount;
+        stakingToken.transfer(msg.sender, _amount);
+    }
+
+    // @notice Function to get rewards
+    function getRewards() external updateRewards(msg.sender) {
+        uint reward = rewards[msg.sender];
+        rewards[msg.sender] = 0;
+        userRewardPaid[msg.sender] += reward;
+        rewardsToken.transfer(msg.sender, reward);
+    }
+
 }
