@@ -49,7 +49,12 @@ contract Staking {
     // @notice Mapping user to reward
     mapping(address => uint256) rewards;
     // @notice Mapping user to balance
-    mapping(address => uint256) balances;    
+    mapping(address => uint256) balances;
+
+    // @notice Events to log for frontend
+    event Stake(address account, uint256 amount);
+    event Withdraw(address account, uint256 amount);
+    event GetRewards(address account, uint256 amount);
 
     // @notice Initialize constructor
     constructor(address _rewardsToken, address _stakingToken) {
@@ -84,6 +89,7 @@ contract Staking {
         _totalSupply += _amount;
         balances[msg.sender] += _amount;
         stakingToken.transferFrom(msg.sender, address(this), _amount);
+        emit Stake(msg.sender, _amount)
     }
 
     // @notice Function to withdraw token
@@ -92,6 +98,7 @@ contract Staking {
         _totalSupply -= _amount;
         balances[msg.sender] -= _amount;
         stakingToken.transfer(msg.sender, _amount);
+        emit Withdraw(msg.sender, _amount);
     }
 
     // @notice Function to get rewards
@@ -100,6 +107,7 @@ contract Staking {
         rewards[msg.sender] = 0;
         userRewardPaid[msg.sender] += reward;
         rewardsToken.transfer(msg.sender, reward);
+        emit GetRewards(msg.sender, reward);
     }
 
 }
