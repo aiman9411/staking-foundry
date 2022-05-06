@@ -68,7 +68,7 @@ contract Staking {
 
     // @notice Function to view earned reward minus paid reward
     function earned(address account) public view returns (uint256) {
-        return (balances[account] * rewardPerToken() - userRewardPerTokenPaid[account]) + rewards[account];
+        return (balances[account] * rewardPerToken() - userRewardPaid[account]) + rewards[account];
     }
 
     // @notice Modifier to update rewards
@@ -82,7 +82,7 @@ contract Staking {
     // @param _amount Amount of token to stake
     function stake(uint256 _amount) external updateRewards(msg.sender) {
         _totalSupply += _amount;
-        _balances[msg.sender] += _amount;
+        balances[msg.sender] += _amount;
         stakingToken.transferFrom(msg.sender, address(this), _amount);
     }
 
@@ -90,7 +90,7 @@ contract Staking {
     // @param _amount Amount of staken token to withdraw
     function withdraw(uint256 _amount) external updateRewards(msg.sender) {
         _totalSupply -= _amount;
-        _balances[msg.sender] -= _amount;
+        balances[msg.sender] -= _amount;
         stakingToken.transfer(msg.sender, _amount);
     }
 
