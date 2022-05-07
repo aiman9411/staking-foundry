@@ -71,32 +71,35 @@ contract StakeContract {
 
     // @notice Function to stake token
     // @param _amount Amount of token to stake
-    function stake(uint256 _amount) external updateRewards(msg.sender) {
+    function stake(uint256 _amount) external updateRewards(msg.sender) returns (bool) {
         _totalSupply += _amount;
         balances[msg.sender] += _amount;
         bool success = stakingToken.transferFrom(msg.sender, address(this), _amount);
-        if(!success) revert Stake__Failed();
         emit Stake(msg.sender, _amount);
+        if(!success) revert Stake__Failed();
+        return success;
     }
 
     // @notice Function to withdraw token
     // @param _amount Amount of staken token to withdraw
-    function withdraw(uint256 _amount) external updateRewards(msg.sender) {
+    function withdraw(uint256 _amount) external updateRewards(msg.sender) returns (bool) {
         _totalSupply -= _amount;
         balances[msg.sender] -= _amount;
         bool success = stakingToken.transfer(msg.sender, _amount);
-        if(!success) revert Withdraw__Failed();
         emit Withdraw(msg.sender, _amount);
+        if(!success) revert Withdraw__Failed();
+        return success;
     }
 
     // @notice Function to get rewards
-    function getRewards() external updateRewards(msg.sender) {
+    function getRewards() external updateRewards(msg.sender) returns (bool) {
         uint reward = rewards[msg.sender];
         rewards[msg.sender] = 0;
         userRewardPaid[msg.sender] += reward;
         bool success = rewardsToken.transfer(msg.sender, reward);
-        if(!success) revert GetRewards_Failed();
         emit GetRewards(msg.sender, reward);
+        if(!success) revert GetRewards_Failed();
+        return success;
     }
 
 }
