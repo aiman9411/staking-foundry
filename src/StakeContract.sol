@@ -15,7 +15,7 @@ error GetRewards_Failed();
 @notice This is a smart contract - a program that can be deployed into Ethereum blockchain
 */
 
-contract Staking {
+contract StakeContract {
 
     // @notice IERC20 for reward token & staking token
     IERC20 public rewardsToken;
