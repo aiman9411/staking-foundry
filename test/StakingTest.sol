@@ -10,7 +10,7 @@ contract ContractTest is Test {
     StakeContract public stakeContract;
     ERC20 public token;
     ERC20 public rewardToken;
-    uint256 public constant AMOUNT = 1e18; 
+    // uint256 public constant AMOUNT = 1e18; 
 
     function setUp() public {
         token = new MockERC20();
@@ -18,13 +18,10 @@ contract ContractTest is Test {
         stakeContract = new StakeContract(address(rewardToken), address(token));
     }
 
-    function testExample() public {
-        assertTrue(true);
-    }
-
-    function testStakingToken() public {
-        token.approve(address(stakeContract), AMOUNT);
-        bool success = stakeContract.stake(AMOUNT);
+    function testStakingToken(uint256 amount) public {
+        token.approve(address(stakeContract), amount);
+        bool success = stakeContract.stake(amount);
         assertTrue(success);
     }
+
 }
