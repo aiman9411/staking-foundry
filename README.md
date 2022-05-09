@@ -4,7 +4,8 @@ Staking contract is a contract that allows users to stake their tokens for a per
 
 ## Testing
 Testing tool: [Foundry:Forge](https://github.com/foundry-rs/foundry)
-Test covers unit tests and fuzz tests using built-in fuzzers.
+
+Testing covers unit tests and fuzz tests using built-in fuzzers.
 
 ## Static Analyzer
 Analyzer tool: [Slither](https://github.com/crytic/slither)
