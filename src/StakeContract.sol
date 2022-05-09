@@ -22,7 +22,7 @@ contract StakeContract {
     IERC20 public stakingToken;
 
     // @notice Reward rate to determine reward amount
-    uint256 public rewardRate = 100;
+    uint256 public constant rewardRate = 100;
     // @notice Last time user updates amount
     uint256 public lastUpdateTime;
     // @notice Reward amount per token
